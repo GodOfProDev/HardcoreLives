@@ -1,0 +1,27 @@
+main: me.godofpro.hardcorelives.Main
+name: HardcoreLives
+version: 1
+author: GodOfPro
+commands:
+  givelive:
+    description: Gives The Player Lives
+    usage: /<command> <player> <number>
+  setlive:
+    description: Set The Player Lives
+    usage: /<command> <player> <number>
+  getlive:
+    description: Sends The Player Lives Into Chat
+    usage: /<command> <player>
+permissions:
+  HardcoreLives.givelive:
+    description: Allows you to use the command /givelive
+    default: op
+  HardcoreLives.setlive:
+    description: Allows you to use the command /setlive
+    default: op
+  HardcoreLives.getlive:
+    description: Allows you to use the command /getlive
+    default: op
+  HardcoreLives.invincibility:
+    description: Your lives won't go down and you won't get banned for getting killed 3 times if you have this perms
+    default: op

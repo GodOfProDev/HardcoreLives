@@ -1,0 +1,9 @@
+# the amount of time you are banned if you die 3 times or how many you set
+# seconds = s | minutes = m | weeks = w | months = mo |years = y |
+tempban-time: "24h"
+# The amount of live you get when you startout
+starting-lives: 3
+# The amount of lives you will have when you get tempbanned (when your lives is 0)
+lives-afterban: 1
+# The amount of kills you need to get for getting a live (player only kills)
+kills-forlive: 2
