@@ -127,17 +127,21 @@ public class Main extends JavaPlugin implements Listener{
                 try {
                     Player target = Bukkit.getPlayer(args[0]);
                     try {
-                        if(player.hasPermission("HardcoreLives.givelive")) {
-                            int amount = Integer.parseInt(args[1]);
-                            int amounts = 0;
-                            if (this.data.getConfig().contains("players." + target.getUniqueId().toString() + ".lives")) {
-                                amounts = this.data.getConfig().getInt("players." + target.getUniqueId().toString() + ".lives");
+                        if(target != null) {
+                            if (player.hasPermission("HardcoreLives.givelive")) {
+                                int amount = Integer.parseInt(args[1]);
+                                int amounts = 0;
+                                if (this.data.getConfig().contains("players." + target.getUniqueId().toString() + ".lives")) {
+                                    amounts = this.data.getConfig().getInt("players." + target.getUniqueId().toString() + ".lives");
+                                }
+                                data.getConfig().set("players." + target.getUniqueId().toString() + ".lives", (amounts + amount));
+                                data.saveConfig();
+                                player.sendMessage("§e§l(!) §eThe Player Has Recived His Lives");
+                            } else {
+                                player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
                             }
-                            data.getConfig().set("players." + target.getUniqueId().toString() + ".lives", (amounts + amount));
-                            data.saveConfig();
-                            player.sendMessage("§e§l(!) §eThe Player Has Recived His Lives");
                         } else {
-                            player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
+                            player.sendMessage("§e§l(!) §cThat is not a valid player");
                         }
                     } catch (IllegalArgumentException e){
                         player.sendMessage("§e§l(!) §cThat is not a valid number");
