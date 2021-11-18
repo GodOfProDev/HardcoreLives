@@ -158,13 +158,17 @@ public class Main extends JavaPlugin implements Listener{
                 try {
                     Player target = Bukkit.getPlayer(args[0]);
                     try {
-                        if(player.hasPermission("HardcoreLives.setlive")) {
-                            int amounts = Integer.parseInt(args[1]);
-                            data.getConfig().set("players." + target.getUniqueId().toString() + ".lives", (amounts));
-                            data.saveConfig();
-                            player.sendMessage("§e§l(!) §eThe Player Has Recived Their Lives");
+                        if(target != null) {
+                            if (player.hasPermission("HardcoreLives.setlive")) {
+                                int amounts = Integer.parseInt(args[1]);
+                                data.getConfig().set("players." + target.getUniqueId().toString() + ".lives", (amounts));
+                                data.saveConfig();
+                                player.sendMessage("§e§l(!) §eThe Player Has Recived Their Lives");
+                            } else {
+                                player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
+                            }
                         } else {
-                            player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
+                            player.sendMessage("§e§l(!) §cThat is not a valid player");
                         }
                     } catch (IllegalArgumentException e){
                         player.sendMessage("§e§l(!) §cThat is not a valid number");
@@ -183,18 +187,22 @@ public class Main extends JavaPlugin implements Listener{
             if (args.length >= 1) {
                 try {
                     Player target = Bukkit.getPlayer(args[0]);
-                    try {
-                        if(player.hasPermission("HardcoreLives.getlive")) {
-                            int amounts = 0;
-                            if (this.data.getConfig().contains("players." + target.getUniqueId().toString() + ".lives")) {
-                                amounts = this.data.getConfig().getInt("players." + target.getUniqueId().toString() + ".lives");
+                    if (target != null) {
+                        try {
+                            if (player.hasPermission("HardcoreLives.getlive")) {
+                                int amounts = 0;
+                                if (this.data.getConfig().contains("players." + target.getUniqueId().toString() + ".lives")) {
+                                    amounts = this.data.getConfig().getInt("players." + target.getUniqueId().toString() + ".lives");
+                                }
+                                player.sendMessage("§e§l(!) §eThis Player Has " + amounts + " Lives!");
+                            } else {
+                                player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
                             }
-                            player.sendMessage("§e§l(!) §eThis Player Has " + amounts + " Lives!");
-                        } else {
-                            player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
+                        } catch (IllegalArgumentException e) {
+                            player.sendMessage("§e§l(!) §cThat is not a valid number");
                         }
-                    } catch (IllegalArgumentException e){
-                        player.sendMessage("§e§l(!) §cThat is not a valid number");
+                    } else {
+                        player.sendMessage("§e§l(!) §cThat is not a valid player");
                     }
                 } catch (IllegalArgumentException e) {
                     player.sendMessage("§e§l(!) §cThat is not a valid player");
@@ -203,6 +211,29 @@ public class Main extends JavaPlugin implements Listener{
 
             } else {
                 player.sendMessage("§e§l(!) §c/getlive <player>");
+            }
+        }
+
+
+        if(cmd.getName().equalsIgnoreCase("lives")) {
+            if (args.length >= 0) {
+                try {
+                    if(player.hasPermission("HardcoreLives.lives")) {
+                        int amountsss = 0;
+                        if (this.data.getConfig().contains("players." + player.getUniqueId().toString() + ".lives")) {
+                            amountsss = this.data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lives");
+                        }
+                        player.sendMessage("§e§l(!) §eYou Have " + amountsss + " Lives!");
+                    } else {
+                        player.sendMessage("§e§l(!) §cYou don't have permission to use this command");
+                    }
+                } catch (IllegalArgumentException e){
+                    player.sendMessage("§e§l(!) §cThat is not a valid number");
+                }
+
+
+            } else {
+                player.sendMessage("§e§l(!) §c/lives");
             }
         }
 
