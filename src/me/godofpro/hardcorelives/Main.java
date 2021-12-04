@@ -1,23 +1,16 @@
 package me.godofpro.hardcorelives;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.godofpro.hardcorelives.files.DataManager;
 import me.godofpro.hardcorelives.files.HardcorelivesExpansion;
-import net.luckperms.api.LuckPerms;
+import me.godofpro.hardcorelives.listeners.ListenersHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin implements Listener{
+public class Main extends JavaPlugin{
 
     private static Main instance;
     private static Main plugin;
@@ -26,10 +19,11 @@ public class Main extends JavaPlugin implements Listener{
 
     @Override
     public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents((Listener) this,this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ListenersHandler(),this);
         // config stuff
         this.saveDefaultConfig();
         instance = this;
+        plugin = this;
         this.data = new DataManager(this);
 
         Bukkit.getLogger().log(Level.INFO, "[Hardcorelives] Starting up the plugin");
@@ -48,81 +42,10 @@ public class Main extends JavaPlugin implements Listener{
     public static Main getPlugin() {
         return plugin;
     }
-
     public static Main getInstance() {
         return instance;
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        // if the player joins and they don't have any data in the file it will create one for them
-        if (!this.data.getConfig().contains("players." + player.getUniqueId().toString() + ".lives")) {
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".lives", this.getConfig().getInt("starting-lives"));
-            data.saveConfig();
-        }
-        // if the player joins and they don't have any data the file it will create one for them
-        if(!this.data.getConfig().contains("players." + player.getUniqueId().toString() + ".kills")) {
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".kills", 0);
-            data.saveConfig();
-        }
-    }
-
-    @EventHandler
-    public void onDeath(EntityDeathEvent event){
-        LuckPerms lp;
-        int amount = 0;
-        if(event.getEntity() instanceof Player){
-            Player player = (Player) event.getEntity();
-            if(!player.hasPermission("HardcoreLives.invincibility")) {
-                if (this.data.getConfig().contains("players." + player.getUniqueId().toString() + ".lives")) {
-                    amount = this.data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lives");
-                }
-                data.getConfig().set("players." + player.getUniqueId().toString() + ".lives", (amount - 1));
-                data.saveConfig();
-
-                if(data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lives") == 0) {
-                    data.getConfig().set("players." + player.getUniqueId().toString() + ".lives", this.getConfig().getInt("lives-afterban"));
-                    data.saveConfig();
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "tempban " + player.getName() + " " + getConfig().getString("tempban-time") + " deathbanned!");
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event){
-        // Check if the one that died is a player
-        if (event.getEntity() instanceof Player){
-            // Check if the killer of the player is a player
-            if(event.getEntity().getKiller() instanceof Player){
-                // Check if the player sucide him/her self
-                Player killer = event.getEntity().getKiller();
-                if(event.getEntity().getKiller().getUniqueId() != event.getEntity().getUniqueId()){
-                    // add 1 kill to the player
-                    int amount = 0;
-                    if (this.data.getConfig().contains("players." + killer.getUniqueId().toString() + ".kills")) {
-                        amount = this.data.getConfig().getInt("players." + killer.getUniqueId().toString() + ".kills");
-                    }
-                    data.getConfig().set("players." + killer.getUniqueId().toString() + ".kills", (amount + 1));
-                    data.saveConfig();
-
-                    // check if the killer has 2 or more kills to give him a live
-                    int amounts = 0;
-                    if (data.getConfig().getInt("players." + killer.getUniqueId().toString() + ".kills") >= this.getConfig().getInt("kills-forlive")){
-                        if (this.data.getConfig().contains("players." + killer.getUniqueId().toString() + ".lives")) {
-                            amounts = this.data.getConfig().getInt("players." + killer.getUniqueId().toString() + ".lives");
-                        }
-                        data.getConfig().set("players." + killer.getUniqueId().toString() + ".lives", (amounts + 1));
-                        data.saveConfig();
-                        // set back the kills to 0
-                        data.getConfig().set("players." + killer.getUniqueId().toString() + ".kills", 0);
-                        data.saveConfig();
-                    }
-                }
-            }
-        }
-    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
